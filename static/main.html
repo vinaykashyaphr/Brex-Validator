@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>QA Validation Report</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .check {
+            margin: 10px 0;
+        }
+
+        .summary {
+            border: 1px solid black;
+            display: flex;
+        }
+
+        .details {
+            display: none;
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        .pass {
+            background-color: lightgreen;
+        }
+
+        .warning {
+            background-color: palegoldenrod;
+        }
+
+        .fail {
+            background-color: lightsalmon;
+        }
+
+        .verify {
+            background-color: #F39C12;
+        }
+
+        .error {
+            background-color: lightcoral;
+        }
+
+        .expand {
+            display: inline-block;
+            width: 7%;
+        }
+
+        .active:hover {
+            cursor: pointer;
+        }
+
+        .active {
+            font-weight: 700;
+            text-align: center;
+            /* margin: auto; */
+        }
+
+        .desc {
+            display: inline-block;
+            width: 78%;
+        }
+
+        .status {
+            display: inline-block;
+            text-align: center;
+            width: 15%;
+        }
+
+        body {
+            max-width: 980px;
+            margin: 0 auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: 500;
+            overflow-y: scroll;
+            padding: 27px 10px 0;
+        }
+
+        p {
+            font-size: 17px;
+        }
+
+        .details>p,
+        .details li {
+            font-size: 15px;
+        }
+
+        .details li {
+            font-weight: 400;
+            list-style-type: circle;
+        }
+
+        .details li:hover {
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-spacing: 0 10px;
+        }
+
+        td {
+            border: 1px solid black;
+            width: 100px;
+            padding: 5px;
+        }
+
+        td:nth-child(3) {
+            border: 0;
+            width: 10px;
+        }
+
+        td:nth-child(3n-1) {
+            border-left: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>BREX Validation Report</h2>
+    <table>
+        <tr>
+            <td><b>Reviewer</b></td>
+            <td id="user"></td>
+            <td></td>
+            <td><b>Resource</b></td>
+            <td id="job_no"></td>
+        </tr>
+        <tr>
+            <td><b>Date</b></td>
+            <td id="date"></td>
+            <td></td>
+            <td><b>Status</b></td>
+            <td id="status"></td>
+        </tr>
+        <tr>
+            <td><b>Time</b></td>
+            <td id="time"></td>
+            <td></td>
+            <td><b>Accuracy</b></td>
+            <td id="accuracy"></td>
+        </tr>
+    </table>
+</body>
+<script>
+    function expand(target) {
+        var details = target.parentNode.parentNode.nextElementSibling;
+        if (target.innerHTML == "[+]") {
+            target.innerHTML = "[–]";
+            details.style = "display: block;"
+        } else {
+            target.innerHTML = "[+]";
+            details.style = "display: none;"
+        }
+    }
+
+    function check(target) {
+        if (target.style.listStyleType == "circle" || target.style.listStyleType == "") {
+            target.style.listStyleType = "disc";
+        } else {
+            target.style.listStyleType = "circle";
+        }
+    }
+</script>
+
+</html>

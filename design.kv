@@ -1,0 +1,405 @@
+#:import Window kivy.core.window.Window
+<MainRoot>
+    orientation: 'vertical'
+
+    MDTopAppBar:
+        id: top_bar
+        orientation: 'horizontal'
+        title: "BREX Validator"
+        spacing: dp(30)
+
+        IconBadge:
+            id: log_info
+            offset: 0.5
+            pos_hint: {'center_y': 0.5}
+            HoverRound:
+                icon: 'information'
+                text: 'Informations'
+                theme_text_color: "Custom"
+                text_color: "black"
+                theme_icon_color: "Custom"
+                icon_color: "black"
+                md_bg_color: [0.8, 0.8, 0.8, 1]
+                tooltip_text: 'info/warnings/errors'
+                on_release:
+                    root.open_info_popup()
+
+
+        IconBadge:
+            id: added_brex
+            offset: 0.5
+            pos_hint: {'center_y': 0.5}
+            HoverRound:
+                icon: 'book-plus'
+                text: 'BREX Manager'
+                theme_text_color: "Custom"
+                text_color: "black"
+                theme_icon_color: "Custom"
+                icon_color: "black"
+                md_bg_color: [0.8, 0.8, 0.8, 1]
+                tooltip_text: 'upload brex for validation'
+                on_release:
+                    content = root.check_for_brex(None)
+                    # root.open_brex_box(content)
+
+
+        HoverRound:
+            icon: 'reload'
+            text: 'Reload'
+            theme_text_color: "Custom"
+            pos_hint: {'center_y': 0.5}
+            text_color: "black"
+            theme_icon_color: "Custom"
+            icon_color: "black"
+            badge_icon: "numeric-5"
+            md_bg_color: [0.8, 0.8, 0.8, 1]
+            tooltip_text: 'reload/clear session'
+            on_release:
+                app.restart()
+
+
+    MDBoxLayout:
+        id: tabs_box
+        MDAnchorLayout:
+            Image:
+                source: 'bvi.png'
+                color: 1, 1, 1, 0.5
+                size_hint: None, 1
+                width: dp(800)
+                halign: 'center'
+
+    MDBottomAppBar:
+        id: bottom_box
+
+
+<FileBrowser>
+    title: "Please browse to a folder with DMCs"
+    icon: "folder"
+    type: "bottom"
+    left_action_items: [["arrow-right"]]
+    mode: "end"
+    elevation: 0
+    #on_action_button: app.root.get_path()
+
+<StartProcess>
+    title: "Click to parse BREX modules"
+    icon: "read"
+    type: "bottom"
+    left_action_items: [["arrow-right"]]
+    mode: "end"
+    elevation: 0
+
+<StartValidation>
+    title: "Click to validate BREX against XML modules"
+    icon: "launch"
+    type: "bottom"
+    left_action_items: [["arrow-right"]]
+    mode: "end"
+    elevation: 0
+
+<StartMapping>
+    title: "Click to view results"
+    icon: "eye"
+    type: "bottom"
+    left_action_items: [["arrow-right"]]
+    mode: "end"
+    elevation: 0
+
+<Download>
+    title: "Click to download the report"
+    icon: "download"
+    type: "bottom"
+    left_action_items: [["arrow-right"]]
+    mode: "end"
+    elevation: 0
+
+
+<InfoPopup>
+    title: 'Run Time Informations'
+    size_hint: 0.8, 0.8
+    separator_height: 0
+    auto_dismiss: False
+    MDBoxLayout:
+        orientation: 'vertical'
+        MDScrollView:
+            do_scroll_x: False
+            MDGridLayout:
+                id: info_grid
+                spacing: dp(20)
+                adaptive_height: True
+                cols: 1
+                size_hint: 0.95, None
+                # width: root.width - dp(30)
+                height: self.minimum_height
+                padding: (20, 20, 20, 20)
+
+
+        MDBoxLayout:
+            size_hint: None, None
+            width: cancel_button.width
+            height: dp(50)
+            # padding: (40, 20, 40, 20)
+            pos_hint: {'right': 1}
+            HoverRound:
+                id: cancel_button
+                icon: 'cancel'
+                text: 'Cancel'
+                theme_text_color: "Custom"
+                pos_hint: {'center_y': 0.5}
+                text_color: "black"
+                theme_icon_color: "Custom"
+                icon_color: "black"
+                md_bg_color: [0.8, 0.8, 0.8, 1]
+                tooltip_text: 'Closes the popup'
+                on_release:
+                    root.dismiss()
+
+
+<ErrorTemplate>:
+    md_bg_color: [0.8, 0.8, 0.8, 1]
+    size_hint: 1, None
+    height: dp(300)
+    padding: (10, 10, 10, 10)
+    orientation: 'vertical'
+    MDCard:
+        id: info_title
+        size_hint: 1, None
+        height: dp(50)
+        pos_hint: {'top': 1}
+        md_bg_color: app.theme_cls.primary_color
+        padding: (10, 10, 10, 10)
+        MDLabel:
+            id: info_title
+            text: ''
+            font_size: 30
+    MDScrollView:
+        MDBoxLayout:
+            adaptive_height: True
+            padding: (10, 10, 10, 10)
+            MDLabel:
+                id: info_desc
+                adaptive_height: True
+                text: ''
+
+<BrexPopup>
+    size_hint: 1, None
+    height: dp(200)
+    orientation: 'vertical'
+    no_brex: None
+    MDScrollView:
+        MDGridLayout:
+            cols: 1
+            size_hint: 1, None
+            height: self.minimum_height
+            id: brex_list
+            spacing: dp(20)
+            padding: (10, 10, 10, 10)
+
+    MDBoxLayout:
+        size_hint: None, None
+        width: upload_button.width+close_button.width
+        height: dp(60)
+        spacing: dp(10)
+        # padding: (40, 20, 40, 20)
+        pos_hint: {'right': 1}
+
+        HoverRound:
+            id: upload_button
+            icon: 'plus'
+            text: 'Upload BREX'
+            theme_text_color: "Custom"
+            pos_hint: {'center_y': 0.5}
+            text_color: "black"
+            theme_icon_color: "Custom"
+            icon_color: "black"
+            md_bg_color: [0, 0.8, 0, 1]
+            tooltip_text: 'Opens file browser'
+            on_release:
+                app.root.browse_for_brex(root.no_brex)
+
+        HoverRound:
+            id: close_button
+            icon: 'cancel'
+            text: 'Close'
+            theme_text_color: "Custom"
+            pos_hint: {'center_y': 0.5}
+            text_color: "black"
+            theme_icon_color: "Custom"
+            icon_color: "black"
+            md_bg_color: [0.8, 0.8, 0.8, 1]
+            tooltip_text: 'Closes the popup'
+            on_release:
+                root.no_brex.dismiss()
+
+<BrexList>
+    size_hint: 1, None
+    adaptive_height: True
+    md_bg_color: "#FFA500"
+    padding: (20, 20, 20, 20)
+    spacing: dp(20)
+    MDLabel:
+        id: brex_name
+        text: ''
+
+    HoverRound:
+        icon: 'attachment-minus'
+        text: 'Remove'
+        theme_text_color: "Custom"
+        pos_hint: {'center_y': 0.5}
+        text_color: "black"
+        theme_icon_color: "Custom"
+        icon_color: "black"
+        md_bg_color: [0.8, 0.8, 0.8, 1]
+        tooltip_text: 'Closes the popup'
+        on_release:
+            app.root.remove_brex(brex_name.text, self)
+
+<ValidationStatus>:
+    title: 'Validating modules...'
+    padding: (0, 10, 0, 60)
+    auto_dismiss: False
+    BoxLayout:
+        orientation: 'vertical'
+        padding: (35, 20, 35, 25)
+        MDProgressBar:
+            id: status_bar
+            value: 0
+            radius: dp(5)
+            size_hint_y: None
+            height: dp(10)
+    BoxLayout:
+        padding: (35, 80, 35, -5)
+        MDLabel:
+            id: action_name
+            size_hint: 0.9, 1
+            text: 'Loading...'
+            font_size: 20
+        MDLabel:
+            id: status_value
+            size_hint: 0.1, 1
+            text: '--'
+            halign: 'right'
+
+<BrexStatus>:
+    title: 'Parsing BREX modules'
+    padding: (0, 10, 0, 60)
+    auto_dismiss: False
+    #size_hint: None, None
+    #width: dp(600)
+    BoxLayout:
+        orientation: 'vertical'
+        padding: (35, 20, 35, 25)
+        MDProgressBar:
+            id: status_bar
+            value: 0
+            radius: dp(5)
+            size_hint_y: None
+            height: dp(10)
+    BoxLayout:
+        padding: (35, 80, 35, -5)
+        MDLabel:
+            id: action_name
+            size_hint: 0.9, 1
+            text: 'Loading...'
+            font_size: 20
+        MDLabel:
+            id: status_value
+            size_hint: 0.1, 1
+            text: '--'
+            halign: 'right'
+
+<StatusPopup>:
+    title: 'Parsing data modules...'
+    padding: (0, 10, 0, 60)
+    auto_dismiss: False
+    #size_hint: None, None
+    #width: dp(600)
+    BoxLayout:
+        orientation: 'vertical'
+        padding: (35, 20, 35, 25)
+        MDProgressBar:
+            id: status_bar
+            value: 0
+            radius: dp(5)
+            size_hint_y: None
+            height: dp(10)
+    BoxLayout:
+        padding: (35, 80, 35, -5)
+        MDLabel:
+            id: action_name
+            size_hint: 0.9, 1
+            text: 'Loading...'
+            font_size: 20
+        MDLabel:
+            id: status_value
+            size_hint: 0.1, 1
+            text: '--'
+            halign: 'right'
+
+<ContentLayout>
+    id: layout
+    cols: 1
+    size_hint_y: None
+    height: self.minimum_height
+
+<Panel>:
+    size_hint_y: None
+    height: dp(150)
+    MDScrollView:
+        MDGridLayout:
+            id: beaker
+            cols: 1
+            spacing: dp(10)
+            size_hint_y: None
+            height: self.minimum_height
+
+<Content>
+    orientation: 'vertical'
+    padding: (0, 0, 0, 20)
+    adaptive_height: True
+    canvas.before:
+        Color:
+            rgba: 0.4, 0.4, 0.4, 0.4
+        Line:
+            width: 1.5
+            rectangle: self.x, self.y, dp(40)+self.width-dp(60), 0
+
+<MapResult>
+    background_color: [0.95, 0.95, 0.95, 1]
+    allow_streach: True
+
+<MappingStatus>:
+    title: 'Mapping the results...'
+    padding: (0, 10, 0, 60)
+    auto_dismiss: False
+    #size_hint: None, None
+    #width: dp(600)
+    BoxLayout:
+        orientation: 'vertical'
+        padding: (35, 20, 35, 25)
+        MDProgressBar:
+            id: status_bar
+            value: 0
+            radius: dp(5)
+            size_hint_y: None
+            height: dp(10)
+    BoxLayout:
+        padding: (35, 80, 35, -5)
+        MDLabel:
+            id: action_name
+            text: 'Loading...'
+        MDLabel:
+            id: status_value
+            text: '--'
+            halign: 'right'
+
+<LoadingLayout>
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    MDSpinner:
+        size_hint: .05, .05
+        pos_hint: {'center_x': .5, 'center_y': .5}
