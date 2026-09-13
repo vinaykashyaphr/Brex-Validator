@@ -1,3 +1,3 @@
 # Brex-Validator
 
-  To validate the Business Rules EXchange module against number of markup files that user has.
+  To validate a number of S1000D BREX (Business Rules Exchange) modules against a set of S1000D compliant XML files.
